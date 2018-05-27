@@ -1,39 +1,77 @@
 import pygame
 
-black = (0, 0, 0)
-white = (255, 255, 255)
+# Constants
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 400
+FLAPPY_PYTHON_PLAYER_IMG_WIDTH = 100
+FLAPPY_PYTHON_PLAYER_IMG_HEIGHT = 100
+FPS = 60
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 pygame.init()
-surface = pygame.display.set_mode((800, 400))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Flappy Python')
 clock = pygame.time.Clock()
 
+img = pygame.image.load('assets/flappy_python_player.png')
+x = 100
+y = 100
+
+# initial move => no move
+y_move = 0
+
+
+def game_over():
+    pygame.quit()
+    quit()
+
 
 def flappy_python(x, y, image):
-    surface.blit(img, (x, y))
+    screen.blit(img, (x, y))
 
 
-img = pygame.image.load('assets/flappy_python_player.png')
-x = 150
-y = 200
+def ifKeyUpIsDown():
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_UP:
+            return True
 
-game_over = False
+
+def ifKeyUpisUp():
+    if event.type == pygame.KEYUP:
+        if event.key == pygame.K_UP:
+            return True
+
+
+game_over_state = False
 
 # game loop
-while not game_over:
+while not game_over_state:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over = True
+            game_over_state = True
+
+        if (ifKeyUpIsDown()):
+            y_move = -5
+
+        if (ifKeyUpisUp()):
+            y_move = 5
+
+    y += y_move
 
     # fills background
-    surface.fill(black)
+    screen.fill(BLACK)
     # add flappy python
     flappy_python(x, y, img)
+
+    if y > (SCREEN_HEIGHT - FLAPPY_PYTHON_PLAYER_IMG_WIDTH) or y < 0:
+        game_over()
 
     # update() => updates specific areas in the screen
     pygame.display.update()
     # set to 60 fps
-    clock.tick(60)
+    clock.tick(FPS)
 
-pygame.quit()
-quit()
+game_over()
