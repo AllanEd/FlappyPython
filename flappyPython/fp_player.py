@@ -32,7 +32,7 @@ class FpPlayer(object):
         self.move_up = move_up
 
     def get_move_down(self):
-        return self.move_down#
+        return self.move_down  #
 
     def set_move_down(self, move_down):
         self.move_down = move_down

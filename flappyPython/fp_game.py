@@ -1,52 +1,27 @@
 import pygame
 import time
-from random import randint
 
+from flappyPython.fp_constants import *
 from flappyPython.fp_player import *
 from flappyPython.fp_blocks import *
-
-# Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 400
-
-FP_TITLE = 'Flappy Python'
-
-FP_PLAYER_IMG_SRC = 'assets/flappy_python_player.png'
-FP_PLAYER_IMG_WIDTH = 100
-FP_PLAYER_IMG_HEIGHT = 100
-
-INIT_FP_PLAYER_POS_X = 100
-INIT_FP_PLAYER_POS_Y = 100
-INIT_FP_PLAYER_SPEED = 0  # initial speed 0 => no move
-
-FP_PLAYER_SPEED_UP = -5
-FP_PLAYER_SPEED_DOWN = 5
-
-FP_BLOCKS_POS_X = SCREEN_WIDTH
-FP_BLOCKS_POS_Y = 0
-FP_BLOCKS_WIDTH = 75
-FP_BLOCKS_GAP = FP_PLAYER_IMG_HEIGHT * 2
-FP_BLOCKS_HEIGHT = randint(0, SCREEN_HEIGHT - FP_BLOCKS_GAP)
-
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-FRAMES_PER_SECOND = 60
-
-# flappy python player initial values
-fp_player = FpPlayer()
-fp_player.set_move_up(FP_PLAYER_SPEED_UP)
-fp_player.set_move_down(FP_PLAYER_SPEED_DOWN)
-fp_player.set_img(pygame.image.load(FP_PLAYER_IMG_SRC))
-
-# flappy python blocks
-fp_blocks = FpBlocks()
 
 # general setup
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(FP_TITLE)
 clock = pygame.time.Clock()
+
+# flappy python player
+fp_player = FpPlayer()
+fp_player.set_move_up(FP_PLAYER_SPEED_UP)
+fp_player.set_move_down(FP_PLAYER_SPEED_DOWN)
+fp_player.set_img(pygame.image.load(FP_PLAYER_IMG_SRC).convert_alpha())
+
+# flappy python blocks
+fp_blocks = FpBlocks()
+fp_blocks.set_speed(FP_BLOCKS_SPEED)
+fp_blocks.set_width(FP_BLOCKS_WIDTH)
+fp_blocks.set_bg_color(FP_BLOCKS_BG_COLOR)
 
 
 def replay_or_quit_game():
@@ -115,18 +90,16 @@ def ifKeyUpIsUp(event):
 
 
 def main():
-    # initial values
+    # initial player values
     fp_player.set_pos_x(INIT_FP_PLAYER_POS_X)
     fp_player.set_pos_y(INIT_FP_PLAYER_POS_Y)
     fp_player.set_move_now(INIT_FP_PLAYER_SPEED)
 
+    # initial blockvalues
     fp_blocks.set_pos_x(FP_BLOCKS_POS_X)
     fp_blocks.set_pos_y(FP_BLOCKS_POS_Y)
-    fp_blocks.set_width(FP_BLOCKS_WIDTH)
     fp_blocks.set_gap(FP_BLOCKS_GAP)
     fp_blocks.set_height(FP_BLOCKS_HEIGHT)
-
-    block_move = 3
 
     game_over_state = False
 
@@ -149,15 +122,17 @@ def main():
         # add flappy python
         fp_player_set(fp_player.get_pos_x(), fp_player.get_pos_y(), fp_player.get_img())
 
-        fp_blocks.draw(pygame, screen, WHITE, SCREEN_HEIGHT)
-        fp_blocks.subtract_pos_x(block_move)
+        pygame.draw.rect(screen, fp_blocks.get_bg_color(), fp_blocks.get_block_top_dimensions())
+        pygame.draw.rect(screen, fp_blocks.get_bg_color(), fp_blocks.get_block_bottom_dimensions(SCREEN_HEIGHT))
+        fp_blocks.move()
 
         # quits game if user hits bottom or top screen
         if fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0:
             game_over()
 
-        # update() => updates specific areas in the screen
+        # draw the scene
         pygame.display.update()
+
         # set to 60 fps
         clock.tick(FRAMES_PER_SECOND)
 

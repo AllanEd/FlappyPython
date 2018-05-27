@@ -1,10 +1,11 @@
 class FpBlocks(object):
-    def __init__(self, pos_x=None, pos_y=None, width=None, height=None, gap=None):
+    def __init__(self, pos_x=None, pos_y=None, width=None, height=None, gap=None, speed=None, bg_color=None):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.width = width
         self.height = height
         self.gap = gap
+        self.speed = speed
 
     def get_pos_x(self):
         return self.pos_x
@@ -27,8 +28,17 @@ class FpBlocks(object):
     def set_gap(self, gap):
         self.gap = gap
 
-    def subtract_pos_x(self, value):
-        self.pos_x -= value
+    def set_speed(self, speed):
+        self.speed = speed
+
+    def get_bg_color(self):
+        return self.bg_color
+
+    def set_bg_color(self, bg_color):
+        self.bg_color = bg_color
+
+    def move(self):
+        self.pos_x -= self.speed
 
     def get_block_top_dimensions(self):
         return [self.pos_x, self.pos_y, self.width, self.height]
@@ -37,7 +47,3 @@ class FpBlocks(object):
         block_bottom_pos_y = self.pos_y + self.height + self.gap
         block_bottom_height = screen_height - block_bottom_pos_y
         return [self.pos_x, block_bottom_pos_y, self.width, block_bottom_height]
-
-    def draw(self, pygame, screen, block_color, screen_height):
-        pygame.draw.rect(screen, block_color, self.get_block_top_dimensions())
-        pygame.draw.rect(screen, block_color, self.get_block_bottom_dimensions(screen_height))
