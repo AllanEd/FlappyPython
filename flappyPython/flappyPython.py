@@ -39,7 +39,7 @@ def ifKeyUpIsDown():
             return True
 
 
-def ifKeyUpisUp():
+def ifKeyUpIsUp():
     if event.type == pygame.KEYUP:
         if event.key == pygame.K_UP:
             return True
@@ -56,7 +56,7 @@ while not game_over_state:
         if (ifKeyUpIsDown()):
             y_move = -5
 
-        if (ifKeyUpisUp()):
+        if (ifKeyUpIsUp()):
             y_move = 5
 
     y += y_move
@@ -66,6 +66,7 @@ while not game_over_state:
     # add flappy python
     flappy_python(x, y, img)
 
+    # quits game if user hits bottom or top screen
     if y > (SCREEN_HEIGHT - FLAPPY_PYTHON_PLAYER_IMG_WIDTH) or y < 0:
         game_over()
 
