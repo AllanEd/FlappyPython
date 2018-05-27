@@ -1,5 +1,5 @@
 class FpPlayer(object):
-    def __init__(self, pos_x, pos_y, move_now, move_up, move_down, img):
+    def __init__(self, pos_x=None, pos_y=None, move_now=None, move_up=None, move_down=None, img=None):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.move_now = move_now
@@ -28,11 +28,20 @@ class FpPlayer(object):
     def get_move_up(self):
         return self.move_up
 
+    def set_move_up(self, move_up):
+        self.move_up = move_up
+
     def get_move_down(self):
-        return self.move_down
+        return self.move_down#
+
+    def set_move_down(self, move_down):
+        self.move_down = move_down
 
     def get_img(self):
         return self.img
+
+    def set_img(self, img):
+        self.img = img
 
     def add_pos_y(self, value):
         self.pos_y += value
