@@ -5,20 +5,24 @@ from flappyPython.fp_player import *
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 400
+
 FP_TITLE = 'Flappy Python'
+
 FP_PLAYER_IMG_SRC = 'assets/flappy_python_player.png'
 FP_PLAYER_IMG_WIDTH = 100
 FP_PLAYER_IMG_HEIGHT = 100
+
 INIT_FP_PLAYER_POS_X = 100
 INIT_FP_PLAYER_POS_Y = 100
 INIT_FP_PLAYER_SPEED = 0  # initial speed 0 => no move
+
 FP_PLAYER_SPEED_UP = -5
 FP_PLAYER_SPEED_DOWN = 5
-FRAMES_PER_SECOND = 60
 
-# Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+
+FRAMES_PER_SECOND = 60
 
 # flappy python player initial values
 fp_player = FpPlayer(
