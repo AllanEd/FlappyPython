@@ -1,5 +1,7 @@
 import pygame
 import time
+from random import randint
+
 from flappyPython.fp_player import *
 
 # Constants
@@ -39,6 +41,16 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption(FP_TITLE)
 clock = pygame.time.Clock()
+
+
+def draw_blocks(pos_x, pos_y, width, height, gap):
+    block_top_dimensions = [pos_x, pos_y, width, height]
+    block_bottom_pos_y = pos_y + height + gap
+    block_bottom_height = SCREEN_HEIGHT - block_bottom_pos_y
+    block_bottom_dimensions = [pos_x, block_bottom_pos_y, width, block_bottom_height]
+
+    pygame.draw.rect(screen, WHITE, block_top_dimensions)
+    pygame.draw.rect(screen, WHITE, block_bottom_dimensions)
 
 
 def replay_or_quit_game():
@@ -90,7 +102,7 @@ def quit_game():
     quit()
 
 
-def fp_set(x, y, image):
+def fp_player_set(x, y, image):
     screen.blit(fp_player.get_img(), (x, y))
 
 
@@ -112,6 +124,13 @@ def main():
     fp_player.set_pos_y(INIT_FP_PLAYER_POS_Y)
     fp_player.set_move_now(INIT_FP_PLAYER_SPEED)
 
+    x_block = SCREEN_WIDTH
+    y_block = 0
+    block_width = 75
+    gap = FP_PLAYER_IMG_HEIGHT * 2
+    block_height = randint(0, SCREEN_HEIGHT - gap)
+    block_move = 3
+
     game_over_state = False
 
     # game loop
@@ -131,7 +150,10 @@ def main():
         # fills background
         screen.fill(BLACK)
         # add flappy python
-        fp_set(fp_player.get_pos_x(), fp_player.get_pos_y(), fp_player.get_img())
+        fp_player_set(fp_player.get_pos_x(), fp_player.get_pos_y(), fp_player.get_img())
+
+        draw_blocks(x_block, y_block, block_width, block_height, gap)
+        x_block -= block_move
 
         # quits game if user hits bottom or top screen
         if fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0:
