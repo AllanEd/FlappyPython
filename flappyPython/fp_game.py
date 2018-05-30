@@ -51,13 +51,31 @@ def game_over_screen(text, clock, screen):
     main()
 
 
-def quit_game():
-    pygame.quit()
-    quit()
-
-
 def fp_player_hits_boundary(fp_player):
     return fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0
+
+
+def fp_block_should_repeat(fp_block_top):
+    return fp_block_top.rect.x < (0 - FP_BLOCKS_WIDTH)
+
+
+def get_block_bottom_y(fp_block_top_height):
+    return FP_BLOCKS_POS_Y + fp_block_top_height + FP_BLOCKS_GAP
+
+
+def get_block_bottom_height(fp_block_top_height):
+    return SCREEN_HEIGHT - get_block_bottom_y(fp_block_top_height)
+
+
+def repeat_block_top(fp_block_top):
+    fp_block_top.rect.x = SCREEN_WIDTH
+    fp_block_top.rect.height = randint(0, SCREEN_HEIGHT - FP_BLOCKS_GAP)
+
+
+def repeat_block_bottom(fp_block_bottom, fp_block_top):
+    fp_block_bottom.rect.x = SCREEN_WIDTH
+    fp_block_bottom.rect.y = get_block_bottom_y(fp_block_top.rect.height)
+    fp_block_bottom.rect.height = get_block_bottom_height(fp_block_top.rect.height)
 
 
 def main():
@@ -76,9 +94,8 @@ def main():
     fp_block_top = FpBlock(FP_BLOCKS_POS_Y, FP_BLOCKS_HEIGHT)
     fp_block_top.draw(screen)
     # block bottom
-    block_bottom_pos_y = FP_BLOCKS_POS_Y + FP_BLOCKS_HEIGHT + FP_BLOCKS_GAP
-    block_bottom_height = SCREEN_HEIGHT - block_bottom_pos_y
-    fp_block_bottom = FpBlock(block_bottom_pos_y, block_bottom_height)
+    fp_block_bottom = FpBlock(get_block_bottom_y(fp_block_top.rect.height),
+                              get_block_bottom_height(fp_block_top.rect.height))
     fp_block_bottom.draw(screen)
 
     fp_events = FpEvents()
@@ -120,6 +137,16 @@ def main():
         pygame.display.update()
 
         # -------
+        # REPEAT
+        # -------
+
+        if fp_block_should_repeat(fp_block_top):
+            # block top
+            repeat_block_top(fp_block_top)
+            # block bottom
+            repeat_block_bottom(fp_block_bottom, fp_block_top)
+
+        # -------
         # QUIT
         # -------
 
@@ -128,4 +155,5 @@ def main():
 
 
 main()
-quit_game()
+pygame.quit()
+quit()
