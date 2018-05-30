@@ -2,20 +2,19 @@ import pygame
 import time
 
 from flappyPython.fp_constants import *
-from flappyPython.fp_player import *
-from flappyPython.fp_block import *
-from flappyPython.fp_message import *
+from flappyPython.fp_player import FpPlayer
+from flappyPython.fp_block import FpBlock
+from flappyPython.fp_message import FpMessage
+from flappyPython.fp_events import FpEvents
 
 
 def replay_or_quit_game():
-    for event in pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.QUIT]):
-        if event.type == pygame.QUIT:
-            quit_game()
+    fp_events = FpEvents()
 
-        elif event.type == pygame.KEYDOWN:
-            continue
+    if fp_events.is_key_pressed():
+        return True
 
-    return None
+    return False
 
 
 def draw_game_over_text(screen):
@@ -46,7 +45,7 @@ def game_over_screen(text, clock, screen):
     pygame.display.update()
     time.sleep(2)
 
-    while replay_or_quit_game():
+    while replay_or_quit_game() == False:
         clock.tick()
 
     main()
@@ -55,32 +54,6 @@ def game_over_screen(text, clock, screen):
 def quit_game():
     pygame.quit()
     quit()
-
-
-def ifKeyUpIsDown(event):
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_UP:
-            return True
-
-
-def ifKeyUpIsUp(event):
-    if event.type == pygame.KEYUP:
-        if event.key == pygame.K_UP:
-            return True
-
-
-def handle_user_events(fp_player):
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return False
-
-        if (ifKeyUpIsDown(event)):
-            fp_player.move_up()
-
-        if (ifKeyUpIsUp(event)):
-            fp_player.move_down()
-
-        return True
 
 
 def fp_player_hits_boundary(fp_player):
@@ -108,6 +81,8 @@ def main():
     fp_block_bottom = FpBlock(block_bottom_pos_y, block_bottom_height)
     fp_block_bottom.draw(screen)
 
+    fp_events = FpEvents()
+
     game_over_state = False
 
     # -------
@@ -123,8 +98,7 @@ def main():
         # -------
 
         # handle user events
-        if handle_user_events(fp_player) == False:
-            game_over_state = True
+        fp_events.handle_user_input(fp_player)
         # block top
         fp_block_top.move()
         # block bottom
