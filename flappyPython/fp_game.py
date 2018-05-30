@@ -18,7 +18,7 @@ def replay_or_quit_game():
     return None
 
 
-def game_over_screen(text, clock, screen):
+def draw_game_over_text(screen):
     game_over_text_position = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
     game_over_text = FpMessage(
         "Game Over!",
@@ -27,6 +27,8 @@ def game_over_screen(text, clock, screen):
     )
     game_over_text.draw(screen)
 
+
+def draw_continue_text(screen):
     continue_text_position = SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)
     continue_text = FpMessage(
         "Press any key to continue",
@@ -35,6 +37,12 @@ def game_over_screen(text, clock, screen):
     )
     continue_text.draw(screen)
 
+
+def game_over_screen(text, clock, screen):
+    draw_game_over_text(screen)
+
+    draw_continue_text(screen)
+
     pygame.display.update()
     time.sleep(2)
 
@@ -42,10 +50,6 @@ def game_over_screen(text, clock, screen):
         clock.tick()
 
     main()
-
-
-def game_over(clock, screen):
-    game_over_screen("Game Over!", clock, screen)
 
 
 def quit_game():
@@ -65,20 +69,39 @@ def ifKeyUpIsUp(event):
             return True
 
 
+def handle_user_events(fp_player):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+
+        if (ifKeyUpIsDown(event)):
+            fp_player.move_up()
+
+        if (ifKeyUpIsUp(event)):
+            fp_player.move_down()
+
+        return True
+
+
+def fp_player_hits_boundary(fp_player):
+    return fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0
+
+
 def main():
+    # -------
+    # SETUP
+    # -------
+
     # general setup
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption(FP_TITLE)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
-
     # player
     fp_player = FpPlayer()
-
     # block top
     fp_block_top = FpBlock(FP_BLOCKS_POS_Y, FP_BLOCKS_HEIGHT)
     fp_block_top.draw(screen)
-
     # block bottom
     block_bottom_pos_y = FP_BLOCKS_POS_Y + FP_BLOCKS_HEIGHT + FP_BLOCKS_GAP
     block_bottom_height = SCREEN_HEIGHT - block_bottom_pos_y
@@ -87,38 +110,47 @@ def main():
 
     game_over_state = False
 
-    # game loop
+    # -------
+    # GAME LOOP
+    # -------
+
     while not game_over_state:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game_over_state = True
-
-            if (ifKeyUpIsDown(event)):
-                fp_player.move_up()
-
-            if (ifKeyUpIsUp(event)):
-                fp_player.move_down()
-
-        # fills background
-        screen.fill(BLACK)
-
-        fp_player.draw(screen)
-
-        fp_block_top.draw(screen)
-        fp_block_top.move()
-
-        fp_block_bottom.draw(screen)
-        fp_block_bottom.move()
-
-        # quits game if user hits bottom or top screen
-        if fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0:
-            game_over(clock, screen)
-
-        # draw the scene
-        pygame.display.update()
-
         # set to 60 fps
         clock.tick(FRAMES_PER_SECOND)
+
+        # -------
+        # MOVING
+        # -------
+
+        # handle user events
+        if handle_user_events(fp_player) == False:
+            game_over_state = True
+        # block top
+        fp_block_top.move()
+        # block bottom
+        fp_block_bottom.move()
+
+        # -------
+        # DRAWING
+        # -------
+
+        # background
+        screen.fill(BLACK)
+        # player
+        fp_player.draw(screen)
+        # block top
+        fp_block_top.draw(screen)
+        # block bottom
+        fp_block_bottom.draw(screen)
+        # scene
+        pygame.display.update()
+
+        # -------
+        # QUIT
+        # -------
+
+        if fp_player_hits_boundary(fp_player):
+            game_over_screen("Game Over!", clock, screen)
 
 
 main()
