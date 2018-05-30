@@ -4,6 +4,8 @@ import time
 from flappyPython.fp_constants import *
 from flappyPython.fp_player import *
 from flappyPython.fp_block import *
+from flappyPython.fp_message import *
+
 
 def replay_or_quit_game():
     for event in pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.QUIT]):
@@ -16,25 +18,22 @@ def replay_or_quit_game():
     return None
 
 
-def make_text_objs(text, font):
-    text_screen = font.render(text, True, WHITE)
-    return text_screen, text_screen.get_rect()
-
-
-def msg_screen(text, size, position, screen):
-    font = pygame.font.Font('freesansbold.ttf', size)
-    title_text_screen, title_text_rect = make_text_objs(text, font)
-    title_text_rect.center = position
-
-    screen.blit(title_text_screen, title_text_rect)
-
-
 def game_over_screen(text, clock, screen):
     game_over_text_position = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
-    msg_screen("Game Over!", 100, game_over_text_position, screen)
+    game_over_text = FpMessage(
+        "Game Over!",
+        100,
+        game_over_text_position
+    )
+    game_over_text.draw(screen)
 
     continue_text_position = SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)
-    msg_screen("Press any key to continue", 20, continue_text_position, screen)
+    continue_text = FpMessage(
+        "Press any key to continue",
+        20,
+        continue_text_position
+    )
+    continue_text.draw(screen)
 
     pygame.display.update()
     time.sleep(2)
