@@ -3,26 +3,7 @@ import time
 
 from flappyPython.fp_constants import *
 from flappyPython.fp_player import *
-from flappyPython.fp_blocks import *
-
-# general setup
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption(FP_TITLE)
-clock = pygame.time.Clock()
-
-# flappy python player
-fp_player = FpPlayer()
-fp_player.set_move_up(FP_PLAYER_SPEED_UP)
-fp_player.set_move_down(FP_PLAYER_SPEED_DOWN)
-fp_player.set_img(pygame.image.load(FP_PLAYER_IMG_SRC).convert_alpha())
-
-# flappy python blocks
-fp_blocks = FpBlocks()
-fp_blocks.set_speed(FP_BLOCKS_SPEED)
-fp_blocks.set_width(FP_BLOCKS_WIDTH)
-fp_blocks.set_bg_color(FP_BLOCKS_BG_COLOR)
-
+from flappyPython.fp_block import *
 
 def replay_or_quit_game():
     for event in pygame.event.get([pygame.KEYDOWN, pygame.KEYUP, pygame.QUIT]):
@@ -40,7 +21,7 @@ def make_text_objs(text, font):
     return text_screen, text_screen.get_rect()
 
 
-def msg_screen(text, size, position):
+def msg_screen(text, size, position, screen):
     font = pygame.font.Font('freesansbold.ttf', size)
     title_text_screen, title_text_rect = make_text_objs(text, font)
     title_text_rect.center = position
@@ -48,12 +29,12 @@ def msg_screen(text, size, position):
     screen.blit(title_text_screen, title_text_rect)
 
 
-def game_over_screen(text):
+def game_over_screen(text, clock, screen):
     game_over_text_position = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
-    msg_screen("Game Over!", 100, game_over_text_position)
+    msg_screen("Game Over!", 100, game_over_text_position, screen)
 
     continue_text_position = SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)
-    msg_screen("Press any key to continue", 20, continue_text_position)
+    msg_screen("Press any key to continue", 20, continue_text_position, screen)
 
     pygame.display.update()
     time.sleep(2)
@@ -64,17 +45,13 @@ def game_over_screen(text):
     main()
 
 
-def game_over():
-    game_over_screen("Game Over!")
+def game_over(clock, screen):
+    game_over_screen("Game Over!", clock, screen)
 
 
 def quit_game():
     pygame.quit()
     quit()
-
-
-def fp_player_set(x, y, image):
-    screen.blit(fp_player.get_img(), (x, y))
 
 
 def ifKeyUpIsDown(event):
@@ -90,16 +67,24 @@ def ifKeyUpIsUp(event):
 
 
 def main():
-    # initial player values
-    fp_player.set_pos_x(INIT_FP_PLAYER_POS_X)
-    fp_player.set_pos_y(INIT_FP_PLAYER_POS_Y)
-    fp_player.set_move_now(INIT_FP_PLAYER_SPEED)
+    # general setup
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption(FP_TITLE)
+    clock = pygame.time.Clock()
 
-    # initial blockvalues
-    fp_blocks.set_pos_x(FP_BLOCKS_POS_X)
-    fp_blocks.set_pos_y(FP_BLOCKS_POS_Y)
-    fp_blocks.set_gap(FP_BLOCKS_GAP)
-    fp_blocks.set_height(FP_BLOCKS_HEIGHT)
+    # player
+    fp_player = FpPlayer()
+
+    # block top
+    fp_block_top = FpBlock(FP_BLOCKS_POS_Y, FP_BLOCKS_HEIGHT)
+    fp_block_top.draw(screen)
+
+    # block bottom
+    block_bottom_pos_y = FP_BLOCKS_POS_Y + FP_BLOCKS_HEIGHT + FP_BLOCKS_GAP
+    block_bottom_height = SCREEN_HEIGHT - block_bottom_pos_y
+    fp_block_bottom = FpBlock(block_bottom_pos_y, block_bottom_height)
+    fp_block_bottom.draw(screen)
 
     game_over_state = False
 
@@ -110,25 +95,25 @@ def main():
                 game_over_state = True
 
             if (ifKeyUpIsDown(event)):
-                fp_player.set_move_now(fp_player.get_move_up())
+                fp_player.move_up()
 
             if (ifKeyUpIsUp(event)):
-                fp_player.set_move_now(fp_player.get_move_down())
-
-        fp_player.add_pos_y(fp_player.get_move_now())
+                fp_player.move_down()
 
         # fills background
         screen.fill(BLACK)
-        # add flappy python
-        fp_player_set(fp_player.get_pos_x(), fp_player.get_pos_y(), fp_player.get_img())
 
-        pygame.draw.rect(screen, fp_blocks.get_bg_color(), fp_blocks.get_block_top_dimensions())
-        pygame.draw.rect(screen, fp_blocks.get_bg_color(), fp_blocks.get_block_bottom_dimensions(SCREEN_HEIGHT))
-        fp_blocks.move()
+        fp_player.draw(screen)
+
+        fp_block_top.draw(screen)
+        fp_block_top.move()
+
+        fp_block_bottom.draw(screen)
+        fp_block_bottom.move()
 
         # quits game if user hits bottom or top screen
         if fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0:
-            game_over()
+            game_over(clock, screen)
 
         # draw the scene
         pygame.display.update()

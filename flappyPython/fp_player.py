@@ -1,47 +1,28 @@
+import pygame
+from flappyPython.fp_constants import *
+
+
 class FpPlayer(object):
-    def __init__(self, pos_x=None, pos_y=None, move_now=None, move_up=None, move_down=None, img=None):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.move_now = move_now
-        self.move_up = move_up
-        self.move_down = move_down
-        self.img = img
+    def __init__(self):
+        self.pos_x = INIT_FP_PLAYER_POS_X
+        self.pos_y = INIT_FP_PLAYER_POS_Y
+        self.move_now = INIT_FP_PLAYER_SPEED
+        self.move_up_speed = FP_PLAYER_SPEED_UP
+        self.move_down_speed = FP_PLAYER_SPEED_DOWN
+        self.img = pygame.image.load(FP_PLAYER_IMG_SRC).convert_alpha()
 
     def get_pos_x(self):
         return self.pos_x
 
-    def set_pos_x(self, pos_x):
-        self.pos_x = pos_x
-
     def get_pos_y(self):
         return self.pos_y
 
-    def set_pos_y(self, pos_y):
-        self.pos_y = pos_y
+    def move_up(self):
+        self.move_now = self.move_up_speed
 
-    def get_move_now(self):
-        return self.move_now
+    def move_down(self):
+        self.move_now = self.move_down_speed
 
-    def set_move_now(self, move_now):
-        self.move_now = move_now
-
-    def get_move_up(self):
-        return self.move_up
-
-    def set_move_up(self, move_up):
-        self.move_up = move_up
-
-    def get_move_down(self):
-        return self.move_down  #
-
-    def set_move_down(self, move_down):
-        self.move_down = move_down
-
-    def get_img(self):
-        return self.img
-
-    def set_img(self, img):
-        self.img = img
-
-    def add_pos_y(self, value):
-        self.pos_y += value
+    def draw(self, screen):
+        self.pos_y += self.move_now
+        screen.blit(self.img, (self.pos_x, self.pos_y))
