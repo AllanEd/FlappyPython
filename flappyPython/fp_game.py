@@ -6,6 +6,7 @@ from flappyPython.fp_player import FpPlayer
 from flappyPython.fp_block import FpBlock
 from flappyPython.fp_message import FpMessage
 from flappyPython.fp_events import FpEvents
+from flappyPython.fp_score import FpScore
 
 
 def replay_or_quit_game():
@@ -18,26 +19,28 @@ def replay_or_quit_game():
 
 
 def draw_game_over_text(screen):
-    game_over_text_position = SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2
     game_over_text = FpMessage(
         "Game Over!",
         100,
-        game_over_text_position
+        [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2],
+        "center"
     )
+
     game_over_text.draw(screen)
 
 
 def draw_continue_text(screen):
-    continue_text_position = SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)
     continue_text = FpMessage(
         "Press any key to continue",
         20,
-        continue_text_position
+        [SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)],
+        "center"
     )
+
     continue_text.draw(screen)
 
 
-def game_over_screen(text, clock, screen):
+def game_over_screen(clock, screen):
     draw_game_over_text(screen)
 
     draw_continue_text(screen)
@@ -68,6 +71,10 @@ def fp_player_hits_blocks(fp_player, fp_block_top):
                 return True
 
     return False
+
+
+def fp_player_passed_blocks(fp_player, fp_block_top):
+    return fp_player.pos_x < fp_block_top.rect.x and fp_player.pos_x > fp_block_top.rect.x - FP_BLOCKS_SPEED
 
 
 def fp_block_should_repeat(fp_block_top):
@@ -115,6 +122,9 @@ def main():
 
     fp_events = FpEvents()
 
+    fp_score = FpScore(0)
+    fp_score.draw(screen)
+
     game_over_state = False
 
     # -------
@@ -148,6 +158,8 @@ def main():
         fp_block_top.draw(screen)
         # block bottom
         fp_block_bottom.draw(screen)
+        # score
+        fp_score.draw(screen)
         # scene
         pygame.display.update()
 
@@ -162,11 +174,18 @@ def main():
             repeat_block_bottom(fp_block_bottom, fp_block_top)
 
         # -------
+        # INCREASE SCORE
+        # -------
+
+        if fp_player_passed_blocks(fp_player, fp_block_top):
+            fp_score.increase(1)
+
+        # -------
         # GAME OVER
         # -------
 
         if fp_player_hits_boundary(fp_player) or fp_player_hits_blocks(fp_player, fp_block_top):
-            game_over_screen("Game Over!", clock, screen)
+            game_over_screen(clock, screen)
 
 
 main()
