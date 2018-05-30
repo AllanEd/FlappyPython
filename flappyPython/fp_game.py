@@ -55,6 +55,21 @@ def fp_player_hits_boundary(fp_player):
     return fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0
 
 
+def fp_player_hits_blocks(fp_player, fp_block_top):
+    if fp_player.pos_x + FP_PLAYER_IMG_WIDTH > fp_block_top.rect.x:
+        # Block top
+        if fp_player.pos_x < fp_block_top.rect.x + fp_block_top.rect.width:
+            if fp_player.pos_y < fp_block_top.rect.height:
+                if fp_player.pos_x - FP_PLAYER_IMG_WIDTH < FP_BLOCKS_WIDTH + fp_block_top.rect.x:
+                    return True
+        # Block bottom
+        if fp_player.pos_y + FP_PLAYER_IMG_HEIGHT > fp_block_top.rect.height + FP_BLOCKS_GAP:
+            if fp_player.pos_x < FP_BLOCKS_WIDTH + fp_block_top.rect.x:
+                return True
+
+    return False
+
+
 def fp_block_should_repeat(fp_block_top):
     return fp_block_top.rect.x < (0 - FP_BLOCKS_WIDTH)
 
@@ -147,10 +162,10 @@ def main():
             repeat_block_bottom(fp_block_bottom, fp_block_top)
 
         # -------
-        # QUIT
+        # GAME OVER
         # -------
 
-        if fp_player_hits_boundary(fp_player):
+        if fp_player_hits_boundary(fp_player) or fp_player_hits_blocks(fp_player, fp_block_top):
             game_over_screen("Game Over!", clock, screen)
 
 
