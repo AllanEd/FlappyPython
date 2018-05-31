@@ -58,25 +58,6 @@ def game_over_screen(clock, screen):
     main()
 
 
-def player_hits_boundary(player):
-    return player.get_pos_y() > (SCREEN_HEIGHT - PLAYER_IMG_WIDTH) or player.get_pos_y() < 0
-
-
-def player_hits_pipes(player, pipe_top):
-    if player.pos_x + PLAYER_IMG_WIDTH > pipe_top.get_pos_left():
-        # Pipe top
-        if player.pos_x < pipe_top.get_pos_left() + PIPES_WIDTH:
-            if player.pos_y < pipe_top.get_height():
-                if player.pos_x - PLAYER_IMG_WIDTH < PIPES_WIDTH + pipe_top.get_pos_left():
-                    return True
-        # Pipe bottom
-        if player.pos_y + PLAYER_IMG_HEIGHT > pipe_top.get_height() + PIPES_GAP:
-            if player.pos_x < PIPES_WIDTH + pipe_top.get_pos_left():
-                return True
-
-    return False
-
-
 def player_passed_pipes(player, pipe_top):
     return player.pos_x < pipe_top.get_pos_right() and player.pos_x > pipe_top.get_pos_right() + PIPES_SPEED
 
@@ -196,7 +177,7 @@ def main():
         # GAME OVER
         # -------
 
-        if player_hits_boundary(player) or player_hits_pipes(player, pipe_top):
+        if player.hits_boundary() or player.hits_pipes(pipe_top):
             game_over_screen(clock, screen)
 
 
