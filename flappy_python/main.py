@@ -124,8 +124,3 @@ def main():
 
         if player.hits_boundary() or player.hits_pipes(pipe_top):
             fp_game_over.game_over_screen(pygame, clock, screen, main)
-
-
-main()
-pygame.quit()
-quit()
