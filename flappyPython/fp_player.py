@@ -4,12 +4,12 @@ from flappyPython.fp_constants import *
 
 class FpPlayer(object):
     def __init__(self):
-        self.pos_x = INIT_FP_PLAYER_POS_X
-        self.pos_y = INIT_FP_PLAYER_POS_Y
-        self.move_now = INIT_FP_PLAYER_SPEED
-        self.move_up_speed = FP_PLAYER_SPEED_UP
-        self.move_down_speed = FP_PLAYER_SPEED_DOWN
-        self.img = pygame.image.load(FP_PLAYER_IMG_SRC).convert_alpha()
+        self.pos_x = INIT_PLAYER_POS_X
+        self.pos_y = INIT_PLAYER_POS_Y
+        self.move_now = INIT_PLAYER_SPEED
+        self.move_up_speed = PLAYER_SPEED_UP
+        self.move_down_speed = PLAYER_SPEED_DOWN
+        self.img = pygame.image.load(PLAYER_IMG_SRC).convert_alpha()
 
     def get_pos_x(self):
         return self.pos_x

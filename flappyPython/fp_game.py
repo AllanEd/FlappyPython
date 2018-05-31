@@ -3,16 +3,16 @@ import time
 
 from flappyPython.fp_constants import *
 from flappyPython.fp_player import FpPlayer
-from flappyPython.fp_block import FpBlock
+from flappyPython.fp_image import FpImage
 from flappyPython.fp_message import FpMessage
 from flappyPython.fp_events import FpEvents
 from flappyPython.fp_score import FpScore
 
 
 def replay_or_quit_game():
-    fp_events = FpEvents()
+    events = FpEvents()
 
-    if fp_events.is_key_pressed():
+    if events.is_key_pressed():
         return True
 
     return False
@@ -54,50 +54,39 @@ def game_over_screen(clock, screen):
     main()
 
 
-def fp_player_hits_boundary(fp_player):
-    return fp_player.get_pos_y() > (SCREEN_HEIGHT - FP_PLAYER_IMG_WIDTH) or fp_player.get_pos_y() < 0
+def player_hits_boundary(player):
+    return player.get_pos_y() > (SCREEN_HEIGHT - PLAYER_IMG_WIDTH) or player.get_pos_y() < 0
 
 
-def fp_player_hits_blocks(fp_player, fp_block_top):
-    if fp_player.pos_x + FP_PLAYER_IMG_WIDTH > fp_block_top.rect.x:
-        # Block top
-        if fp_player.pos_x < fp_block_top.rect.x + fp_block_top.rect.width:
-            if fp_player.pos_y < fp_block_top.rect.height:
-                if fp_player.pos_x - FP_PLAYER_IMG_WIDTH < FP_BLOCKS_WIDTH + fp_block_top.rect.x:
+def player_hits_pipes(player, pipe_top):
+    if player.pos_x + PLAYER_IMG_WIDTH > pipe_top.get_pos_left():
+        # Pipe top
+        if player.pos_x < pipe_top.get_pos_left() + PIPES_WIDTH:
+            if player.pos_y < pipe_top.get_height():
+                if player.pos_x - PLAYER_IMG_WIDTH < PIPES_WIDTH + pipe_top.get_pos_left():
                     return True
-        # Block bottom
-        if fp_player.pos_y + FP_PLAYER_IMG_HEIGHT > fp_block_top.rect.height + FP_BLOCKS_GAP:
-            if fp_player.pos_x < FP_BLOCKS_WIDTH + fp_block_top.rect.x:
+        # Pipe bottom
+        if player.pos_y + PLAYER_IMG_HEIGHT > pipe_top.get_height() + PIPES_GAP:
+            if player.pos_x < PIPES_WIDTH + pipe_top.get_pos_left():
                 return True
 
     return False
 
 
-def fp_player_passed_blocks(fp_player, fp_block_top):
-    return fp_player.pos_x < fp_block_top.rect.x and fp_player.pos_x > fp_block_top.rect.x - FP_BLOCKS_SPEED
+def player_passed_pipes(player, pipe_top):
+    return player.pos_x < pipe_top.get_pos_right() and player.pos_x > pipe_top.get_pos_right() + PIPES_SPEED
 
 
-def fp_block_should_repeat(fp_block_top):
-    return fp_block_top.rect.x < (0 - FP_BLOCKS_WIDTH)
+def set_pipe_top_random_pos_top(pipe_top):
+    pipe_top.set_pos_top(randint(0, SCREEN_HEIGHT - PIPES_GAP) - PIPES_HEIGHT)
 
 
-def get_block_bottom_y(fp_block_top_height):
-    return FP_BLOCK_TOP_POS_Y + fp_block_top_height + FP_BLOCKS_GAP
+def get_pipe_bottom_y(pipe_top_y):
+    return pipe_top_y + PIPES_HEIGHT + PIPES_GAP
 
 
-def get_block_bottom_height(fp_block_top_height):
-    return SCREEN_HEIGHT - get_block_bottom_y(fp_block_top_height)
-
-
-def repeat_block_top(fp_block_top):
-    fp_block_top.rect.x = SCREEN_WIDTH
-    fp_block_top.rect.height = randint(0, SCREEN_HEIGHT - FP_BLOCKS_GAP)
-
-
-def repeat_block_bottom(fp_block_bottom, fp_block_top):
-    fp_block_bottom.rect.x = SCREEN_WIDTH
-    fp_block_bottom.rect.y = get_block_bottom_y(fp_block_top.rect.height)
-    fp_block_bottom.rect.height = get_block_bottom_height(fp_block_top.rect.height)
+def adjust_pipe_bottom_y(pipe_bottom, pipe_top):
+    pipe_bottom.set_pos_top(get_pipe_bottom_y(pipe_top.get_pos_top()))
 
 
 def main():
@@ -110,20 +99,41 @@ def main():
     pygame.display.set_caption(FP_TITLE)
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
+    # background
+    bg_sky = pygame.image.load(BG_SKY_SRC).convert()
+
+    bg_clouds_img = pygame.image.load(BG_CLOUDS_SRC).convert_alpha()
+    bg_clouds_first = FpImage(0, 0, BG_CLOUDS_SPEED, bg_clouds_img)
+    bg_clouds_second = FpImage(SCREEN_WIDTH, 0, BG_CLOUDS_SPEED, bg_clouds_img)
+
+    bg_ground_img = pygame.image.load(BG_GROUND_SRC).convert_alpha()
+    bg_ground_first = FpImage(0, 0, BG_GROUND_SPEED, bg_ground_img)
+    bg_ground_second = FpImage(SCREEN_WIDTH, 0, BG_GROUND_SPEED, bg_ground_img)
+
+    bg_moving_objects = [
+        bg_clouds_first,
+        bg_clouds_second,
+        bg_ground_first,
+        bg_ground_second,
+    ]
+
+    # pipes
+    pipe_top_img = pygame.image.load(PIPE_TOP_SRC).convert_alpha()
+    pipe_top = FpImage(SCREEN_WIDTH, INIT_PIPE_TOP_Y, PIPES_SPEED, pipe_top_img)
+
+    pipe_bottom_img = pygame.image.load(PIPE_BOTTOM_SRC).convert_alpha()
+    pipe_bottom = FpImage(SCREEN_WIDTH, get_pipe_bottom_y(INIT_PIPE_TOP_Y), PIPES_SPEED, pipe_bottom_img)
+
     # player
-    fp_player = FpPlayer()
-    # block top
-    fp_block_top = FpBlock(FP_BLOCK_TOP_POS_Y, INIT_FP_BLOCK_TOP_HEIGHT)
-    fp_block_top.draw(screen)
-    # block bottom
-    fp_block_bottom = FpBlock(get_block_bottom_y(fp_block_top.rect.height),
-                              get_block_bottom_height(fp_block_top.rect.height))
-    fp_block_bottom.draw(screen)
+    player = FpPlayer()
 
-    fp_events = FpEvents()
+    # events
+    events = FpEvents()
 
-    fp_score = FpScore(0)
-    fp_score.draw(screen)
+    # score
+    score = FpScore(0)
+    score.draw(screen)
 
     game_over_state = False
 
@@ -135,31 +145,31 @@ def main():
         # set to 60 fps
         clock.tick(FRAMES_PER_SECOND)
 
-        # -------
-        # MOVING
-        # -------
-
         # handle user events
-        fp_events.handle_user_input(fp_player)
-        # block top
-        fp_block_top.move()
-        # block bottom
-        fp_block_bottom.move()
+        events.handle_user_input(player)
 
         # -------
         # DRAWING
         # -------
 
         # background
-        screen.fill(BLACK)
+        screen.blit(bg_sky, BG_SKY_POS)
+        for o in bg_moving_objects:
+            o.move()
+            o.draw(screen)
+
         # player
-        fp_player.draw(screen)
-        # block top
-        fp_block_top.draw(screen)
-        # block bottom
-        fp_block_bottom.draw(screen)
+        player.draw(screen)
+
+        # pipes
+        pipe_top.move()
+        pipe_top.draw(screen)
+        pipe_bottom.move()
+        pipe_bottom.draw(screen)
+
         # score
-        fp_score.draw(screen)
+        score.draw(screen)
+
         # scene
         pygame.display.update()
 
@@ -167,24 +177,22 @@ def main():
         # REPEAT
         # -------
 
-        if fp_block_should_repeat(fp_block_top):
-            # block top
-            repeat_block_top(fp_block_top)
-            # block bottom
-            repeat_block_bottom(fp_block_bottom, fp_block_top)
+        if pipe_top.pos.left == SCREEN_WIDTH:
+            set_pipe_top_random_pos_top(pipe_top)
+            adjust_pipe_bottom_y(pipe_bottom, pipe_top)
 
         # -------
         # INCREASE SCORE
         # -------
 
-        if fp_player_passed_blocks(fp_player, fp_block_top):
-            fp_score.increase(1)
+        if player_passed_pipes(player, pipe_top):
+            score.increase(1)
 
         # -------
         # GAME OVER
         # -------
 
-        if fp_player_hits_boundary(fp_player) or fp_player_hits_blocks(fp_player, fp_block_top):
+        if player_hits_boundary(player) or player_hits_pipes(player, pipe_top):
             game_over_screen(clock, screen)
 
 
