@@ -1,5 +1,4 @@
 import pygame
-from flappyPython.fp_constants import *
 
 
 class FpMessage(object):
@@ -23,6 +22,5 @@ class FpMessage(object):
             text_on_screen_rect.center = self.position
         elif self.align == "topleft":
             text_on_screen_rect.topleft = self.position
-
 
         screen.blit(text_on_screen, text_on_screen_rect)

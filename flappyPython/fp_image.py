@@ -1,5 +1,6 @@
 import pygame
-from flappyPython.fp_constants import *
+
+from flappyPython import fp_constants as c
 
 
 class FpImage(pygame.sprite.Sprite):
@@ -16,7 +17,7 @@ class FpImage(pygame.sprite.Sprite):
         self.pos = self.pos.move(self.speed, 0)
 
         if self.pos.right < 0:
-            self.pos.left = SCREEN_WIDTH
+            self.pos.left = c.SCREEN_WIDTH
 
     def draw(self, screen):
         screen.blit(self.image, self.pos)

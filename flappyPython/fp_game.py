@@ -1,62 +1,12 @@
 import pygame
-import time
 
-from flappyPython.fp_constants import *
+from flappyPython import fp_constants as c
+from flappyPython import fp_game_over
 from flappyPython.fp_player import FpPlayer
 from flappyPython.fp_image import FpImage
-from flappyPython.fp_pipe import FpPipe
-from flappyPython.fp_message import FpMessage
 from flappyPython.fp_events import FpEvents
+from flappyPython.fp_pipe import FpPipe
 from flappyPython.fp_score import FpScore
-
-
-def replay_or_quit_game():
-    events = FpEvents()
-
-    if events.is_key_pressed():
-        return True
-
-    return False
-
-
-def draw_game_over_text(screen):
-    game_over_text = FpMessage(
-        "Game Over",
-        80,
-        [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2],
-        "center",
-        FONT_SUPER_MARIO_256_SRC,
-        WHITE
-    )
-
-    game_over_text.draw(screen)
-
-
-def draw_continue_text(screen):
-    continue_text = FpMessage(
-        "Press any key to continue",
-        20,
-        [SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)],
-        "center",
-        FONT_SUPER_MARIO_256_SRC,
-        WHITE
-    )
-
-    continue_text.draw(screen)
-
-
-def game_over_screen(clock, screen):
-    draw_game_over_text(screen)
-
-    draw_continue_text(screen)
-
-    pygame.display.update()
-    time.sleep(2)
-
-    while replay_or_quit_game() == False:
-        clock.tick()
-
-    main()
 
 
 def main():
@@ -66,20 +16,20 @@ def main():
 
     # general setup
     pygame.init()
-    pygame.display.set_caption(FP_TITLE)
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption(c.FP_TITLE)
+    screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
     # background
-    bg_sky = pygame.image.load(BG_SKY_SRC).convert()
+    bg_sky = pygame.image.load(c.BG_SKY_SRC).convert()
 
-    bg_clouds_img = pygame.image.load(BG_CLOUDS_SRC).convert_alpha()
-    bg_clouds_first = FpImage(0, 0, BG_CLOUDS_SPEED, bg_clouds_img)
-    bg_clouds_second = FpImage(SCREEN_WIDTH, 0, BG_CLOUDS_SPEED, bg_clouds_img)
+    bg_clouds_img = pygame.image.load(c.BG_CLOUDS_SRC).convert_alpha()
+    bg_clouds_first = FpImage(0, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
+    bg_clouds_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
 
-    bg_ground_img = pygame.image.load(BG_GROUND_SRC).convert_alpha()
-    bg_ground_first = FpImage(0, 0, BG_GROUND_SPEED, bg_ground_img)
-    bg_ground_second = FpImage(SCREEN_WIDTH, 0, BG_GROUND_SPEED, bg_ground_img)
+    bg_ground_img = pygame.image.load(c.BG_GROUND_SRC).convert_alpha()
+    bg_ground_first = FpImage(0, 0, c.BG_GROUND_SPEED, bg_ground_img)
+    bg_ground_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_GROUND_SPEED, bg_ground_img)
 
     bg_moving_objects = [
         bg_clouds_first,
@@ -89,14 +39,14 @@ def main():
     ]
 
     # pipes
-    pipe_top_img = pygame.image.load(PIPE_TOP_SRC).convert_alpha()
-    pipe_top = FpPipe(SCREEN_WIDTH, INIT_PIPE_TOP_Y, PIPES_SPEED, pipe_top_img)
+    pipe_top_img = pygame.image.load(c.PIPE_TOP_SRC).convert_alpha()
+    pipe_top = FpPipe(c.SCREEN_WIDTH, c.INIT_PIPE_TOP_Y, c.PIPES_SPEED, pipe_top_img)
 
-    pipe_bottom_img = pygame.image.load(PIPE_BOTTOM_SRC).convert_alpha()
+    pipe_bottom_img = pygame.image.load(c.PIPE_BOTTOM_SRC).convert_alpha()
     pipe_bottom = FpPipe(
-        SCREEN_WIDTH,
+        c.SCREEN_WIDTH,
         pipe_top.get_recalculated_bottom_y(pipe_top),
-        PIPES_SPEED, pipe_bottom_img
+        c.PIPES_SPEED, pipe_bottom_img
     )
 
     # player
@@ -117,7 +67,7 @@ def main():
 
     while not game_over_state:
         # set to 60 fps
-        clock.tick(FRAMES_PER_SECOND)
+        clock.tick(c.FRAMES_PER_SECOND)
 
         # handle user events
         events.handle_user_input(player)
@@ -127,7 +77,7 @@ def main():
         # -------
 
         # background
-        screen.blit(bg_sky, BG_SKY_POS)
+        screen.blit(bg_sky, c.BG_SKY_POS)
         for o in bg_moving_objects:
             o.move()
             o.draw(screen)
@@ -151,7 +101,7 @@ def main():
         # REPEAT
         # -------
 
-        if pipe_top.pos.left == SCREEN_WIDTH:
+        if pipe_top.pos.left == c.SCREEN_WIDTH:
             pipe_top.set_random_pos_top()
             pipe_bottom.set_recalculated_bottom_y(pipe_top)
 
@@ -167,7 +117,7 @@ def main():
         # -------
 
         if player.hits_boundary() or player.hits_pipes(pipe_top):
-            game_over_screen(clock, screen)
+            fp_game_over.game_over_screen(pygame, clock, screen, main)
 
 
 main()

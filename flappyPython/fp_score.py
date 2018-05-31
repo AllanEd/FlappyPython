@@ -1,5 +1,5 @@
+from flappyPython import fp_constants as c
 from flappyPython.fp_message import FpMessage
-from flappyPython.fp_constants import *
 
 
 class FpScore(object):
@@ -13,9 +13,9 @@ class FpScore(object):
         score_text = FpMessage(
             str(self.score),
             50,
-            [SCREEN_WIDTH / 2, 50],
+            [c.SCREEN_WIDTH / 2, 50],
             "center",
-            FONT_SUPER_MARIO_256_SRC,
-            WHITE
+            c.FONT_SUPER_MARIO_256_SRC,
+            c.WHITE
         )
         score_text.draw(screen)

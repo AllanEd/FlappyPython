@@ -1,5 +1,7 @@
+from random import randint
+
+from flappyPython import fp_constants as c
 from flappyPython.fp_image import FpImage
-from flappyPython.fp_constants import *
 
 
 class FpPipe(FpImage):
@@ -20,16 +22,16 @@ class FpPipe(FpImage):
         return self.pos.right
 
     def get_height(self):
-        return self.pos.top + PIPES_HEIGHT
+        return self.pos.top + c.PIPES_HEIGHT
 
     def player_passed_pipes(self, player):
-        return player.pos_x < self.get_pos_right() and player.pos_x > self.get_pos_right() + PIPES_SPEED
+        return player.pos_x < self.get_pos_right() and player.pos_x > self.get_pos_right() + c.PIPES_SPEED
 
     def set_random_pos_top(self):
-        self.set_pos_top(randint(0, SCREEN_HEIGHT - PIPES_GAP) - PIPES_HEIGHT)
+        self.set_pos_top(randint(0, c.SCREEN_HEIGHT - c.PIPES_GAP) - c.PIPES_HEIGHT)
 
     def get_recalculated_bottom_y(self, pipe_top):
-        return pipe_top.get_pos_top() + PIPES_HEIGHT + PIPES_GAP
+        return pipe_top.get_pos_top() + c.PIPES_HEIGHT + c.PIPES_GAP
 
     def set_recalculated_bottom_y(self, pipe_top):
         recalculated_bottom_y = self.get_recalculated_bottom_y(pipe_top)
