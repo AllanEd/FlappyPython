@@ -8,7 +8,7 @@ WHITE = (255, 255, 255)
 
 FP_TITLE = 'Flappy Python'
 
-PLAYER_IMG_SRC = 'assets/flappy_python_player.png'
+PLAYER_IMG_SRC = 'assets/game_objects/player.png'
 PLAYER_IMG_WIDTH = 100
 PLAYER_IMG_HEIGHT = 100
 PLAYER_SPEED_UP = -5
