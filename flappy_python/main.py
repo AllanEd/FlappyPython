@@ -1,5 +1,5 @@
 # Setup
-from flappy_python.fp_setup import FpSetup
+from flappy_python.classes.fp_setup import FpSetup
 # constants
 from flappy_python import fp_constants as c
 # helper for game over
@@ -15,7 +15,7 @@ def main(pygame):
     # -------
 
     while not s.game_over_state:
-        # set to 60 fps
+        # set the fps
         s.clock.tick(c.FRAMES_PER_SECOND)
 
         # handle user events
