@@ -1,7 +1,13 @@
 import pygame
 
+# constants
 from flappyPython import fp_constants as c
+# resources
+from flappyPython.resources import paths as p
+from flappyPython.resources import texts as t
+# helper for game over
 from flappyPython import fp_game_over
+# classes
 from flappyPython.fp_player import FpPlayer
 from flappyPython.fp_image import FpImage
 from flappyPython.fp_events import FpEvents
@@ -16,18 +22,18 @@ def main():
 
     # general setup
     pygame.init()
-    pygame.display.set_caption(c.FP_TITLE)
+    pygame.display.set_caption(t.TITLE)
     screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
     # background
-    bg_sky = pygame.image.load(c.BG_SKY_SRC).convert()
+    bg_sky = pygame.image.load(p.BG_SKY).convert()
 
-    bg_clouds_img = pygame.image.load(c.BG_CLOUDS_SRC).convert_alpha()
+    bg_clouds_img = pygame.image.load(p.BG_CLOUDS).convert_alpha()
     bg_clouds_first = FpImage(0, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
     bg_clouds_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
 
-    bg_ground_img = pygame.image.load(c.BG_GROUND_SRC).convert_alpha()
+    bg_ground_img = pygame.image.load(p.BG_GROUND).convert_alpha()
     bg_ground_first = FpImage(0, 0, c.BG_GROUND_SPEED, bg_ground_img)
     bg_ground_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_GROUND_SPEED, bg_ground_img)
 
@@ -39,10 +45,10 @@ def main():
     ]
 
     # pipes
-    pipe_top_img = pygame.image.load(c.PIPE_TOP_SRC).convert_alpha()
+    pipe_top_img = pygame.image.load(p.PIPE_TOP).convert_alpha()
     pipe_top = FpPipe(c.SCREEN_WIDTH, c.INIT_PIPE_TOP_Y, c.PIPES_SPEED, pipe_top_img)
 
-    pipe_bottom_img = pygame.image.load(c.PIPE_BOTTOM_SRC).convert_alpha()
+    pipe_bottom_img = pygame.image.load(p.PIPE_BOTTOM).convert_alpha()
     pipe_bottom = FpPipe(
         c.SCREEN_WIDTH,
         pipe_top.get_recalculated_bottom_y(pipe_top),

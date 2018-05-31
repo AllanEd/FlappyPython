@@ -1,6 +1,11 @@
 import time
 
+# constants
 from flappyPython import fp_constants as c
+# resources
+from flappyPython.resources import paths as p
+from flappyPython.resources import texts as t
+# classes
 from flappyPython.fp_message import FpMessage
 from flappyPython.fp_events import FpEvents
 
@@ -16,11 +21,11 @@ def replay_or_quit_game():
 
 def draw_game_over_text(screen):
     game_over_text = FpMessage(
-        "Game Over",
+        t.GAME_OVER,
         80,
         [c.SCREEN_WIDTH / 2, c.SCREEN_HEIGHT / 2],
-        "center",
-        c.FONT_SUPER_MARIO_256_SRC,
+        t.CENTER,
+        p.SUPER_MARIO_256,
         c.WHITE
     )
 
@@ -29,11 +34,11 @@ def draw_game_over_text(screen):
 
 def draw_continue_text(screen):
     continue_text = FpMessage(
-        "Press any key to continue",
+        t.CONTINUE,
         20,
         [c.SCREEN_WIDTH / 2, ((c.SCREEN_HEIGHT / 2) + 100)],
-        "center",
-        c.FONT_SUPER_MARIO_256_SRC,
+        t.CENTER,
+        p.SUPER_MARIO_256,
         c.WHITE
     )
 

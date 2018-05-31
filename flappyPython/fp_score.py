@@ -1,4 +1,9 @@
+# constants
 from flappyPython import fp_constants as c
+# resources
+from flappyPython.resources import paths as p
+from flappyPython.resources import texts as t
+# classes
 from flappyPython.fp_message import FpMessage
 
 
@@ -14,8 +19,8 @@ class FpScore(object):
             str(self.score),
             50,
             [c.SCREEN_WIDTH / 2, 50],
-            "center",
-            c.FONT_SUPER_MARIO_256_SRC,
+            t.CENTER,
+            p.SUPER_MARIO_256,
             c.WHITE
         )
         score_text.draw(screen)

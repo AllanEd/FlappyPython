@@ -1,6 +1,9 @@
 import pygame
 
+# constants
 from flappyPython import fp_constants as c
+# resources
+from flappyPython.resources import paths as p
 
 
 class FpPlayer(object):
@@ -10,7 +13,7 @@ class FpPlayer(object):
         self.move_now = c.INIT_PLAYER_SPEED
         self.move_up_speed = c.PLAYER_SPEED_UP
         self.move_down_speed = c.PLAYER_SPEED_DOWN
-        self.img = pygame.image.load(c.PLAYER_IMG_SRC).convert_alpha()
+        self.img = pygame.image.load(p.PLAYER_IMG).convert_alpha()
 
     def move_up(self):
         self.move_now = self.move_up_speed

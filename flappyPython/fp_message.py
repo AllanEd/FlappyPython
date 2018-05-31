@@ -18,9 +18,6 @@ class FpMessage(object):
         text_on_screen = self.get_text_on_screen()
         text_on_screen_rect = text_on_screen.get_rect()
 
-        if self.align == "center":
-            text_on_screen_rect.center = self.position
-        elif self.align == "topleft":
-            text_on_screen_rect.topleft = self.position
+        text_on_screen_rect.center = self.position
 
         screen.blit(text_on_screen, text_on_screen_rect)
