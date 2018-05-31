@@ -3,7 +3,6 @@ from random import randint
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 400
 
-BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
 PLAYER_IMG_WIDTH = 100
