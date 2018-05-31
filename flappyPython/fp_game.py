@@ -20,10 +20,12 @@ def replay_or_quit_game():
 
 def draw_game_over_text(screen):
     game_over_text = FpMessage(
-        "Game Over!",
-        100,
+        "Game Over",
+        80,
         [SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2],
-        "center"
+        "center",
+        FONT_SUPER_MARIO_256_SRC,
+        WHITE
     )
 
     game_over_text.draw(screen)
@@ -34,7 +36,9 @@ def draw_continue_text(screen):
         "Press any key to continue",
         20,
         [SCREEN_WIDTH / 2, ((SCREEN_HEIGHT / 2) + 100)],
-        "center"
+        "center",
+        FONT_SUPER_MARIO_256_SRC,
+        WHITE
     )
 
     continue_text.draw(screen)
