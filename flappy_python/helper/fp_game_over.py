@@ -55,4 +55,4 @@ def game_over_screen(pygame, clock, screen, main):
     while replay_or_quit_game() == False:
         clock.tick()
 
-    main()
+    main(pygame)

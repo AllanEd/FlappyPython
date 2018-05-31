@@ -1,66 +1,69 @@
 # Setup
-from flappy_python.fp_setup import *
+from flappy_python.fp_setup import FpSetup
 # constants
 from flappy_python import fp_constants as c
 # helper for game over
 from flappy_python.helper import fp_game_over
 
 
-def main():
+def main(pygame):
+    # create a new setup instance
+    s = FpSetup(pygame)
+
     # -------
     # GAME LOOP
     # -------
 
-    while not game_over_state:
+    while not s.game_over_state:
         # set to 60 fps
-        clock.tick(c.FRAMES_PER_SECOND)
+        s.clock.tick(c.FRAMES_PER_SECOND)
 
         # handle user events
-        events.handle_user_input(player)
+        s.events.handle_user_input(s.player)
 
         # -------
         # DRAWING
         # -------
 
         # background
-        screen.blit(bg_sky, c.BG_SKY_POS)
-        for o in bg_moving_objects:
+        s.screen.blit(s.bg_sky, c.BG_SKY_POS)
+        for o in s.bg_moving_objects:
             o.move()
-            o.draw(screen)
+            o.draw(s.screen)
 
         # player
-        player.draw(screen)
+        s.player.draw(s.screen)
 
         # pipes
-        pipe_top.move()
-        pipe_top.draw(screen)
-        pipe_bottom.move()
-        pipe_bottom.draw(screen)
+        s.pipe_top.move()
+        s.pipe_top.draw(s.screen)
+        s.pipe_bottom.move()
+        s.pipe_bottom.draw(s.screen)
 
         # score
-        score.draw(screen)
+        s.score.draw(s.screen)
 
         # scene
-        pygame.display.update()
+        s.pygame.display.update()
 
         # -------
         # REPEAT
         # -------
 
-        if pipe_top.pos.left == c.SCREEN_WIDTH:
-            pipe_top.set_random_pos_top()
-            pipe_bottom.set_recalculated_bottom_y(pipe_top)
+        if s.pipe_top.pos.left == c.SCREEN_WIDTH:
+            s.pipe_top.set_random_pos_top()
+            s.pipe_bottom.set_recalculated_bottom_y(s.pipe_top)
 
         # -------
         # INCREASE SCORE
         # -------
 
-        if pipe_top.player_passed_pipes(player):
-            score.increase(1)
+        if s.pipe_top.player_passed_pipes(s.player):
+            s.score.increase(1)
 
         # -------
         # GAME OVER
         # -------
 
-        if player.hits_boundary() or player.hits_pipes(pipe_top):
-            fp_game_over.game_over_screen(pygame, clock, screen, main)
+        if s.player.hits_boundary() or s.player.hits_pipes(s.pipe_top):
+            fp_game_over.game_over_screen(s.pygame, s.clock, s.screen, main)

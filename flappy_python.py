@@ -5,6 +5,6 @@ import pygame
 from flappy_python.main import main
 
 if __name__ == '__main__':
-    main()
+    main(pygame)
     pygame.quit()
     pygame.exit()
