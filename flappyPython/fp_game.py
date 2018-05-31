@@ -4,6 +4,7 @@ import time
 from flappyPython.fp_constants import *
 from flappyPython.fp_player import FpPlayer
 from flappyPython.fp_image import FpImage
+from flappyPython.fp_pipe import FpPipe
 from flappyPython.fp_message import FpMessage
 from flappyPython.fp_events import FpEvents
 from flappyPython.fp_score import FpScore
@@ -58,22 +59,6 @@ def game_over_screen(clock, screen):
     main()
 
 
-def player_passed_pipes(player, pipe_top):
-    return player.pos_x < pipe_top.get_pos_right() and player.pos_x > pipe_top.get_pos_right() + PIPES_SPEED
-
-
-def set_pipe_top_random_pos_top(pipe_top):
-    pipe_top.set_pos_top(randint(0, SCREEN_HEIGHT - PIPES_GAP) - PIPES_HEIGHT)
-
-
-def get_pipe_bottom_y(pipe_top_y):
-    return pipe_top_y + PIPES_HEIGHT + PIPES_GAP
-
-
-def adjust_pipe_bottom_y(pipe_bottom, pipe_top):
-    pipe_bottom.set_pos_top(get_pipe_bottom_y(pipe_top.get_pos_top()))
-
-
 def main():
     # -------
     # SETUP
@@ -105,10 +90,14 @@ def main():
 
     # pipes
     pipe_top_img = pygame.image.load(PIPE_TOP_SRC).convert_alpha()
-    pipe_top = FpImage(SCREEN_WIDTH, INIT_PIPE_TOP_Y, PIPES_SPEED, pipe_top_img)
+    pipe_top = FpPipe(SCREEN_WIDTH, INIT_PIPE_TOP_Y, PIPES_SPEED, pipe_top_img)
 
     pipe_bottom_img = pygame.image.load(PIPE_BOTTOM_SRC).convert_alpha()
-    pipe_bottom = FpImage(SCREEN_WIDTH, get_pipe_bottom_y(INIT_PIPE_TOP_Y), PIPES_SPEED, pipe_bottom_img)
+    pipe_bottom = FpPipe(
+        SCREEN_WIDTH,
+        pipe_top.get_recalculated_bottom_y(pipe_top),
+        PIPES_SPEED, pipe_bottom_img
+    )
 
     # player
     player = FpPlayer()
@@ -163,14 +152,14 @@ def main():
         # -------
 
         if pipe_top.pos.left == SCREEN_WIDTH:
-            set_pipe_top_random_pos_top(pipe_top)
-            adjust_pipe_bottom_y(pipe_bottom, pipe_top)
+            pipe_top.set_random_pos_top()
+            pipe_bottom.set_recalculated_bottom_y(pipe_top)
 
         # -------
         # INCREASE SCORE
         # -------
 
-        if player_passed_pipes(player, pipe_top):
+        if pipe_top.player_passed_pipes(player):
             score.increase(1)
 
         # -------
