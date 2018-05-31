@@ -82,7 +82,7 @@ def fp_block_should_repeat(fp_block_top):
 
 
 def get_block_bottom_y(fp_block_top_height):
-    return FP_BLOCKS_POS_Y + fp_block_top_height + FP_BLOCKS_GAP
+    return FP_BLOCK_TOP_POS_Y + fp_block_top_height + FP_BLOCKS_GAP
 
 
 def get_block_bottom_height(fp_block_top_height):
@@ -113,7 +113,7 @@ def main():
     # player
     fp_player = FpPlayer()
     # block top
-    fp_block_top = FpBlock(FP_BLOCKS_POS_Y, FP_BLOCKS_HEIGHT)
+    fp_block_top = FpBlock(FP_BLOCK_TOP_POS_Y, INIT_FP_BLOCK_TOP_HEIGHT)
     fp_block_top.draw(screen)
     # block bottom
     fp_block_bottom = FpBlock(get_block_bottom_y(fp_block_top.rect.height),

@@ -5,7 +5,7 @@ from flappyPython.fp_constants import *
 class FpBlock(object):
     def __init__(self, pos_y, height):
         self.rect = pygame.rect.Rect((
-            FP_BLOCKS_POS_X,
+            INIT_FP_BLOCKS_POS_X,
             pos_y,
             FP_BLOCKS_WIDTH,
             height
