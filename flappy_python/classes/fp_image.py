@@ -16,7 +16,7 @@ class FpImage(pygame.sprite.Sprite):
     def move(self):
         self.pos = self.pos.move(self.speed, 0)
 
-        if self.pos.right < 0:
+        if self.pos.right <= 0:
             self.pos.left = c.SCREEN_WIDTH
 
     def draw(self, screen):
