@@ -15,6 +15,9 @@ class FpPlayer(object):
         self.move_down_speed = c.PLAYER_SPEED_DOWN
         self.img = pygame.image.load(p.PLAYER_IMG).convert_alpha()
 
+    def get_pos_x(self):
+        return self.pos_x
+
     def move_up(self):
         self.move_now = self.move_up_speed
 

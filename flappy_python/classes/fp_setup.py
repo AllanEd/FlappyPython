@@ -21,7 +21,8 @@ class FpSetup:
         self.clock = pygame.time.Clock()
 
         # background
-        self.bg_sky = self.pygame.image.load(p.BG_SKY).convert()
+        __bg_sky_img = self.pygame.image.load(p.BG_SKY).convert()
+        self.bg_sky = FpImage(0, 0, 0, __bg_sky_img)
 
         __bg_clouds_img = self.pygame.image.load(p.BG_CLOUDS).convert_alpha()
         __bg_clouds_first = FpImage(0, 0, c.BG_CLOUDS_SPEED, __bg_clouds_img)
@@ -40,13 +41,15 @@ class FpSetup:
 
         # pipes
         __pipe_top_img = self.pygame.image.load(p.PIPE_TOP).convert_alpha()
-        self.pipe_top = FpPipe(c.SCREEN_WIDTH, c.INIT_PIPE_TOP_Y, c.PIPES_SPEED, __pipe_top_img)
+        self.pipe_top = FpPipe(
+            c.INIT_PIPE_TOP_Y,
+            __pipe_top_img
+        )
 
         __pipe_bottom_img = self.pygame.image.load(p.PIPE_BOTTOM).convert_alpha()
         self.pipe_bottom = FpPipe(
-            c.SCREEN_WIDTH,
-            self.pipe_top.get_recalculated_bottom_y(self.pipe_top),
-            c.PIPES_SPEED, __pipe_bottom_img
+            FpPipe.calculate_pipe_bottom_y(self.pipe_top),
+            __pipe_bottom_img
         )
 
         # player
@@ -56,7 +59,7 @@ class FpSetup:
         self.events = FpEvents()
 
         # score
-        self.score = FpScore(0)
-        self.score.draw(self.screen)
+        self.score = FpScore(c.SCORE_START_POINTS)
 
-        self.game_over_state = False
+        # game over state
+        self.is_game_over = False

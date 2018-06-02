@@ -45,7 +45,7 @@ def draw_continue_text(screen):
     continue_text.draw(screen)
 
 
-def game_over_screen(pygame, clock, screen, main):
+def display_game_over_screen(pygame, clock, screen, main):
     draw_game_over_text(screen)
     draw_continue_text(screen)
 

@@ -14,7 +14,7 @@ def main(pygame):
     # GAME LOOP
     # -------
 
-    while not s.game_over_state:
+    while not s.is_game_over:
         # set the fps
         s.clock.tick(c.FRAMES_PER_SECOND)
 
@@ -26,7 +26,7 @@ def main(pygame):
         # -------
 
         # background
-        s.screen.blit(s.bg_sky, c.BG_SKY_POS)
+        s.bg_sky.draw(s.screen)
         for o in s.bg_moving_objects:
             o.move()
             o.draw(s.screen)
@@ -52,18 +52,18 @@ def main(pygame):
 
         if s.pipe_top.pos.left == c.SCREEN_WIDTH:
             s.pipe_top.set_random_pos_top()
-            s.pipe_bottom.set_recalculated_bottom_y(s.pipe_top)
+            s.pipe_bottom.set_recalculated_pipe_bottom_y(s.pipe_top)
 
         # -------
         # INCREASE SCORE
         # -------
 
         if s.pipe_top.player_passed_pipes(s.player):
-            s.score.increase(1)
+            s.score.increase(c.SCORE_INCREASE_POINTS)
 
         # -------
         # GAME OVER
         # -------
 
         if s.player.hits_boundary() or s.player.hits_pipes(s.pipe_top):
-            fp_game_over.game_over_screen(s.pygame, s.clock, s.screen, main)
+            fp_game_over.display_game_over_screen(s.pygame, s.clock, s.screen, main)

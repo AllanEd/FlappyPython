@@ -17,7 +17,7 @@ class FpScore(object):
     def draw(self, screen):
         score_text = FpMessage(
             str(self.score),
-            50,
+            c.SCORE_FONT_SIZE,
             [c.SCREEN_WIDTH / 2, 50],
             t.CENTER,
             p.SUPER_MARIO_256,
