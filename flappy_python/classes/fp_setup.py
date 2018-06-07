@@ -16,60 +16,81 @@ from flappy_python.helper import fp_game_over
 class FpSetup:
     """Creates the general setup.
 
+    Sets the pygame setup(1), game backgrounds(2), the pipe obstacles(3),
+    the player itself(4), events like input(5), the game score(6) and
+    the game over state(7).
+
     Attributes:
         pygame: A pygame module for the setup of flappy python.
     """
 
     def __init__(self, pygame):
+        # 1. Pygame setup
         self.pygame = pygame
         self.pygame.init()
         self.pygame.display.set_caption(t.TITLE)
         self.screen = pygame.display.set_mode((c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
 
-        # background
-        __bg_sky_img = self.pygame.image.load(p.BG_SKY).convert()
-        self.bg_sky = FpImage(0, 0, 0, __bg_sky_img)
+        # 2. Background
+        self.__set_bg_sky()
+        self.__set_bg_clouds()
+        self.__set_bg_ground()
+        self.bg_moving_objects = self.bg_clouds + self.bg_ground
 
-        __bg_clouds_img = self.pygame.image.load(p.BG_CLOUDS).convert_alpha()
-        __bg_clouds_first = FpImage(0, 0, c.BG_CLOUDS_SPEED, __bg_clouds_img)
-        __bg_clouds_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_CLOUDS_SPEED, __bg_clouds_img)
+        # 3. Pipes
+        self.__set_pipe_top()
+        self.__set_pipe_bottom()
 
-        __bg_ground_img = self.pygame.image.load(p.BG_GROUND).convert_alpha()
-        __bg_ground_first = FpImage(0, 0, c.BG_GROUND_SPEED, __bg_ground_img)
-        __bg_ground_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_GROUND_SPEED, __bg_ground_img)
-
-        self.bg_moving_objects = [
-            __bg_clouds_first,
-            __bg_clouds_second,
-            __bg_ground_first,
-            __bg_ground_second,
-        ]
-
-        # pipes
-        __pipe_top_img = self.pygame.image.load(p.PIPE_TOP).convert_alpha()
-        self.pipe_top = FpPipe(
-            c.INIT_PIPE_TOP_Y,
-            __pipe_top_img
-        )
-
-        __pipe_bottom_img = self.pygame.image.load(p.PIPE_BOTTOM).convert_alpha()
-        self.pipe_bottom = FpPipe(
-            FpPipe.calculate_pipe_bottom_y(self.pipe_top),
-            __pipe_bottom_img
-        )
-
-        # player
+        # 4. Player
         self.player = FpPlayer()
 
-        # events
+        # 5. Events
         self.events = FpEvents()
 
-        # score
+        # 6. Score
         self.score = FpScore(c.SCORE_START_POINTS)
 
-        # game over state
+        # 7. Game over state
         self.is_game_over = False
+
+    def __set_bg_sky(self):
+        bg_sky_img = self.pygame.image.load(p.BG_SKY).convert()
+        self.bg_sky = FpImage(0, 0, 0, bg_sky_img)
+
+    def __set_bg_clouds(self):
+        bg_clouds_img = self.pygame.image.load(p.BG_CLOUDS).convert_alpha()
+        bg_clouds_first = FpImage(0, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
+        bg_clouds_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_CLOUDS_SPEED, bg_clouds_img)
+
+        self.bg_clouds = [
+            bg_clouds_first,
+            bg_clouds_second
+        ]
+
+    def __set_bg_ground(self):
+        bg_ground_img = self.pygame.image.load(p.BG_GROUND).convert_alpha()
+        bg_ground_first = FpImage(0, 0, c.BG_GROUND_SPEED, bg_ground_img)
+        bg_ground_second = FpImage(c.SCREEN_WIDTH, 0, c.BG_GROUND_SPEED, bg_ground_img)
+
+        self.bg_ground = [
+            bg_ground_first,
+            bg_ground_second
+        ]
+
+    def __set_pipe_top(self):
+        pipe_top_img = self.pygame.image.load(p.PIPE_TOP).convert_alpha()
+        self.pipe_top = FpPipe(
+            c.INIT_PIPE_TOP_Y,
+            pipe_top_img
+        )
+
+    def __set_pipe_bottom(self):
+        pipe_bottom_img = self.pygame.image.load(p.PIPE_BOTTOM).convert_alpha()
+        self.pipe_bottom = FpPipe(
+            FpPipe.calculate_pipe_bottom_y(self.pipe_top),
+            pipe_bottom_img
+        )
 
     def game_loop(self):
         return not self.is_game_over

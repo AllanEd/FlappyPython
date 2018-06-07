@@ -5,6 +5,15 @@ from flappy_python.classes.fp_image import FpImage
 
 
 class FpPipe(FpImage):
+    """Creates a flappy python pipe.
+
+    A pipe is an obstacle that inherits from an flappy python image.
+
+    Attributes:
+        y: An integer of the images y position coordination.
+        image: A pygame Surface object that holds the image.
+    """
+
     x = c.SCREEN_WIDTH
     speed = c.PIPES_SPEED
 
@@ -33,3 +42,14 @@ class FpPipe(FpImage):
     def set_recalculated_pipe_bottom_y(self, pipe_top):
         recalculated_bottom_y = self.calculate_pipe_bottom_y(pipe_top)
         self.pos.top = recalculated_bottom_y
+
+    def move(self, pipe_top=False):
+        self.pos = self.pos.move(self.speed, 0)
+
+        if self.pos.right <= 0:
+            self.pos.left = c.SCREEN_WIDTH
+
+            if (pipe_top):
+                self.set_recalculated_pipe_bottom_y(pipe_top)
+            else:
+                self.set_random_pos_top()
