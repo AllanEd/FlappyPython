@@ -9,11 +9,18 @@ from flappy_python.classes.fp_image import FpImage
 from flappy_python.classes.fp_events import FpEvents
 from flappy_python.classes.fp_pipe import FpPipe
 from flappy_python.classes.fp_score import FpScore
+# helper for game over
+from flappy_python.helper import fp_game_over
 
 
 class FpSetup:
+    """Creates the general setup.
+
+    Attributes:
+        pygame: A pygame module for the setup of flappy python.
+    """
+
     def __init__(self, pygame):
-        # general setup
         self.pygame = pygame
         self.pygame.init()
         self.pygame.display.set_caption(t.TITLE)
@@ -63,3 +70,45 @@ class FpSetup:
 
         # game over state
         self.is_game_over = False
+
+    def game_loop(self):
+        return not self.is_game_over
+
+    def set_frames_per_second(self):
+        self.clock.tick(c.FRAMES_PER_SECOND)
+
+    def handle_user_input(self):
+        self.events.handle_user_input(self.player)
+
+    def draw_and_move_bg(self):
+        self.bg_sky.draw(self.screen)
+        for o in self.bg_moving_objects:
+            o.move()
+            o.draw(self.screen)
+
+    def draw_player(self):
+        self.player.draw(self.screen)
+
+    def draw_and_move_pipes(self):
+        self.pipe_top.move()
+        self.pipe_top.draw(self.screen)
+        self.pipe_bottom.move(self.pipe_top)
+        self.pipe_bottom.draw(self.screen)
+
+    def draw_score(self):
+        self.score.draw(self.screen)
+
+    def update_display(self):
+        self.pygame.display.update()
+
+    def player_passes_pipes(self):
+        return self.pipe_top.player_passed_pipes(self.player)
+
+    def increase_score(self):
+        self.score.increase(c.SCORE_INCREASE_POINTS)
+
+    def player_hits_boundary_or_pipes(self):
+        return self.player.hits_boundary() or self.player.hits_pipes(self.pipe_top)
+
+    def show_game_over_screen(self, main):
+        fp_game_over.display_game_over_screen(self.pygame, self.clock, self.screen, main)
