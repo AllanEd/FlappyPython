@@ -7,7 +7,14 @@ from flappy_python.resources import texts as t
 from flappy_python.classes.fp_message import FpMessage
 
 
-class FpScore(object):
+class FpScore:
+    """Creates the game score.
+
+    Creates, increases and draws the game score.
+
+    Attributes:
+        score: An integer that holds the initial score.
+    """
     def __init__(self, score):
         self.score = score
 

@@ -10,7 +10,7 @@ class FpPipe(FpImage):
     A pipe is an obstacle that inherits from an flappy python image.
 
     Attributes:
-        y: An integer of the images y position coordination.
+        y: An integer for the pipes y position.
         image: A pygame Surface object that holds the image.
     """
 
@@ -35,15 +35,11 @@ class FpPipe(FpImage):
     def set_random_pos_top(self):
         self.pos.top = randint(0, c.SCREEN_HEIGHT - c.PIPES_GAP) - c.PIPES_HEIGHT
 
-    @staticmethod
-    def calculate_pipe_bottom_y(pipe_top):
-        return pipe_top.get_pos_top() + c.PIPES_HEIGHT + c.PIPES_GAP
-
     def set_recalculated_pipe_bottom_y(self, pipe_top):
         recalculated_bottom_y = self.calculate_pipe_bottom_y(pipe_top)
         self.pos.top = recalculated_bottom_y
 
-    def move(self, pipe_top=False):
+    def move(self, pipe_top=None):
         self.pos = self.pos.move(self.speed, 0)
 
         if self.pos.right <= 0:
@@ -53,3 +49,7 @@ class FpPipe(FpImage):
                 self.set_recalculated_pipe_bottom_y(pipe_top)
             else:
                 self.set_random_pos_top()
+
+    @staticmethod
+    def calculate_pipe_bottom_y(pipe_top):
+        return pipe_top.get_pos_top() + c.PIPES_HEIGHT + c.PIPES_GAP

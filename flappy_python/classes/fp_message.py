@@ -1,7 +1,20 @@
 import pygame
 
 
-class FpMessage(object):
+class FpMessage:
+    """Creates pygame text messages.
+
+    Creates text messages and displays it to the users screen.
+
+    Attributes:
+        text: A string that holds the text that will be displayed.
+        font_size: An integer for the font size of the text.
+        position: A list with the x and y coordinates of the texts position on the screen.
+        align: A string that holds the alignment, e.g. 'center'.
+        font_src: A string that holds the path to the font.
+        color: A tupel with the (r, g, b) values.
+    """
+
     def __init__(self, text, font_size, position, align, font_src, color):
         self.text = text
         self.font_size = font_size

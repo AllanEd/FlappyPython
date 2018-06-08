@@ -6,7 +6,12 @@ from flappy_python import fp_constants as c
 from flappy_python.resources import paths as p
 
 
-class FpPlayer(object):
+class FpPlayer:
+    """Creates the player object.
+
+    The player object is actually a pygame image object.
+    """
+
     def __init__(self):
         self.pos_x = c.INIT_PLAYER_POS_X
         self.pos_y = c.INIT_PLAYER_POS_Y

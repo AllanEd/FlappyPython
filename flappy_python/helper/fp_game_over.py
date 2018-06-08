@@ -1,5 +1,4 @@
 import time
-
 # constants
 import flappy_python.fp_constants as c
 # resources
