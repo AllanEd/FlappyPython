@@ -101,20 +101,25 @@ class FpSetup:
     def handle_user_input(self):
         self.events.handle_user_input(self.player)
 
-    def draw_and_move_bg(self):
+    def draw_bg(self):
         self.bg_sky.draw(self.screen)
         for o in self.bg_moving_objects:
-            o.move()
             o.draw(self.screen)
+
+    def move_bg(self):
+        for o in self.bg_moving_objects:
+            o.move()
 
     def draw_player(self):
         self.player.draw(self.screen)
 
-    def draw_and_move_pipes(self):
-        self.pipe_top.move()
+    def draw_pipes(self):
         self.pipe_top.draw(self.screen)
-        self.pipe_bottom.move(self.pipe_top)
         self.pipe_bottom.draw(self.screen)
+
+    def move_pipes(self):
+        self.pipe_top.move()
+        self.pipe_bottom.move(self.pipe_top)
 
     def draw_score(self):
         self.score.draw(self.screen)

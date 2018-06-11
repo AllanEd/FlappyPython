@@ -6,9 +6,9 @@ def main(pygame):
     """Runs the game.
     
     Implements the game loops(2), sets the frames per second(2)
-    handles the user input(3), draws and moves the elements(4),
-    updates the display(5) increases the score(6) and handles
-    game over(7).
+    handles the user input(3), draws(4) and moves(5) the elements,
+    updates the display(6) increases the score(7) and handles
+    game over(8).
     
     Args:
         pygame: The current pygame module instance.
@@ -24,19 +24,23 @@ def main(pygame):
         # 3. User input
         s.handle_user_input()
 
-        # 4. Drawing/moving
-        s.draw_and_move_bg()
+        # 4. Drawing
+        s.draw_bg()
         s.draw_player()
-        s.draw_and_move_pipes()
+        s.draw_pipes()
         s.draw_score()
 
-        # 5. Updating display
+        # 5. Moving
+        s.move_bg()
+        s.move_pipes()
+
+        # 6. Updating display
         s.update_display()
 
-        # 6. Increase score
+        # 7. Increase score
         if s.player_passes_pipes():
             s.increase_score()
 
-        # 7. Game over
+        # 8. Game over
         if s.player_hits_boundary_or_pipes():
             s.show_game_over_screen(main)
